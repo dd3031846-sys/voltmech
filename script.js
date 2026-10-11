@@ -1,0 +1,12 @@
+const $=(s,root=document)=>root.querySelector(s),$$=(s,root=document)=>[...root.querySelectorAll(s)];
+// Resume PDF currently lives in assets/images. Move it later only if you also update this path.
+$$('a[download]').forEach(link=>link.href='assets/images/Pradeep-Resume.pdf');
+const nav=$('.nav'), menu=$('.menu-toggle'), navLinks=$$('.nav nav a');
+function updateScroll(){const h=document.documentElement;$('.progress span').style.width=`${(h.scrollTop/(h.scrollHeight-h.clientHeight))*100}%`;nav.classList.toggle('scrolled',scrollY>30)}
+addEventListener('scroll',updateScroll,{passive:true});updateScroll();
+menu.addEventListener('click',()=>{const open=$('.nav nav').classList.toggle('open');menu.setAttribute('aria-expanded',open);menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')});navLinks.forEach(a=>a.addEventListener('click',()=>$('.nav nav').classList.remove('open')));
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12});$$('.reveal').forEach(el=>observer.observe(el));
+const filters=$$('.filters button'),items=$$('.gallery-item');filters.forEach(btn=>btn.addEventListener('click',()=>{filters.forEach(b=>b.classList.remove('active'));btn.classList.add('active');items.forEach(item=>{const show=btn.dataset.filter==='all'||item.dataset.category===btn.dataset.filter;item.hidden=!show;item.style.animation=show?'fade .35s ease':''})}));
+const modal=$('.lightbox');items.forEach(item=>item.addEventListener('click',()=>{$('#modal-title').textContent=item.dataset.title;$('#modal-category').textContent=item.dataset.category.toUpperCase()+' / CREATIVE WORK';modal.showModal()}));$('.close').addEventListener('click',()=>modal.close());modal.addEventListener('click',e=>{if(e.target===modal)modal.close()});
+$('form').addEventListener('submit',e=>{e.preventDefault();$('.form-note').textContent='Thanks — this demo form is ready to connect to your preferred email service.';e.currentTarget.reset()});
+if(matchMedia('(pointer:fine)').matches){const cursor=$('.cursor-dot');addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px'});$$('a,button,input,textarea').forEach(el=>{el.addEventListener('mouseenter',()=>cursor.classList.add('hover'));el.addEventListener('mouseleave',()=>cursor.classList.remove('hover'))})}
